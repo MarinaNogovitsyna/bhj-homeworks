@@ -28,51 +28,30 @@ for (let el of btnDecrement) {
 for (let product of products) {
   const btnAdd = product.lastElementChild.lastElementChild.lastElementChild;
   btnAdd.addEventListener("click", () => {
-    if (!cartProducts.children.length) {
+    const productInCard = Array.from(cartProducts.children).find(
+      (item) => item.dataset.id === product.dataset.id
+    );
+    console.log(productInCard);
+    if (productInCard) {
+      productInCard.lastElementChild.textContent =
+        +productInCard.lastElementChild.textContent +
+        +product.lastElementChild.firstElementChild.children[1].children[1]
+          .textContent;
+      animation(product, productInCard);
+    } else {
       addProduct(product);
-      return;
     }
-    for (let cartProduct of cartProducts.children) {
-      if (cartProduct.dataset.id === product.dataset.id) {
-        cartProduct.lastElementChild.textContent =
-          +cartProduct.lastElementChild.textContent +
-          +product.lastElementChild.firstElementChild.children[1].children[1]
-            .textContent;
-        animation(product, cartProduct);
-        return;
-      }
-    }
-    addProduct(product);
   });
 }
 
 function addProduct(product) {
-  const id = product.dataset.id;
-  const srcImg = product.children[1].src;
-  const count =
-    product.lastElementChild.firstElementChild.children[1].children[1]
-      .textContent;
   const cartProduct = document.createElement("div");
-  cartProduct.classList.add("cart__product");
-  cartProduct.dataset.id = id;
-  const cartProductImg = document.createElement("img");
-  cartProductImg.classList.add("cart__product-image");
-  cartProductImg.src = srcImg;
-  const cartProductDelete = document.createElement("div");
-  cartProductDelete.classList.add("cart__product-delete");
-  cartProductDelete.textContent = "x";
-  cartProductDelete.addEventListener("click", () =>
-    deleteCartProduct(cartProduct)
-  );
-  const cartProductCount = document.createElement("div");
-  cartProductCount.classList.add("cart__product-count");
-  cartProductCount.textContent = count;
-
-  cartProduct.insertAdjacentElement("afterbegin", cartProductImg);
-  cartProductImg.insertAdjacentElement("afterend", cartProductDelete);
-  cartProduct.insertAdjacentElement("beforeend", cartProductCount);
   cartProducts.insertAdjacentElement("afterbegin", cartProduct);
-
+  cartProduct.outerHTML = `<div class="cart__product" data-id="${product.dataset.id}">
+  <img class="cart__product-image" src="${product.children[1].src}">
+  <div class="cart__product-delete" onClick="deleteCartProduct(this.parentElement)">x</div>
+  <div class="cart__product-count">${product.lastElementChild.firstElementChild.children[1].children[1].textContent}</div>
+</div>`;
   cart.classList.remove("cart-hidden");
 }
 

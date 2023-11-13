@@ -1,36 +1,29 @@
 const input = document.getElementById("task__input");
 const form = document.getElementById("tasks__form");
 const taskList = document.getElementById("tasks__list");
+const btnAdd = document.getElementById('tasks__add');
 
 if (localStorage.getItem("todos")) loadTodosFromLocalStorage();
 // localStorage.clear()
 
-input.addEventListener("keydown", (event) => {
-  if (event.code === "Enter") {
-    event.preventDefault();
-    if (input.value) {
+btnAdd.addEventListener("click", (event) => {
+  event.preventDefault();
+    if (input.value.trim()) {
       const newTodo = createNewTodo(input.value);
       taskList.insertAdjacentElement("afterbegin", newTodo);
       input.value = "";
       saveTodoToLocalStorage(newTodo);
     }
-  }
 });
 
 function createNewTodo(value) {
-  const containerOfTask = document.createElement("div");
-  containerOfTask.classList.add("task");
-  const taskTitle = document.createElement("div");
-  taskTitle.classList.add("task__title");
-  taskTitle.textContent = value;
-  const remove = document.createElement("a");
-  remove.classList.add("task__remove");
-  remove.innerHTML = "&times;";
-  remove.onclick = () => removeElement(containerOfTask);
-
-  containerOfTask.insertAdjacentElement("afterbegin", taskTitle);
-  containerOfTask.insertAdjacentElement("beforeend", remove);
-
+  const containerOfTask = document.createElement('div');
+  containerOfTask.innerHTML = `<div class="task">
+  <div class="task__title">
+    ${value}
+  </div>
+  <a href="#" class="task__remove" onClick="removeElement(this.parentElement)">&times;</a>
+</div>`;
   return containerOfTask;
 }
 
