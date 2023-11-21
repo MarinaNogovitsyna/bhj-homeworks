@@ -21,12 +21,24 @@ function addPoll(result) {
 function getStatistik(id, index) {
   alert("Спасибо, ваш голос засчитан!");
   let statistik = fetch(
-    `https://students.netoservices.ru/nestjs-backend/poll?vote=${id}&answer=${index}`,
+    `https://students.netoservices.ru/nestjs-backend/poll`,
     {
       method: "POST",
-      "Content-Type": "application/x-www-form-urlencoded",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `vote=${id}&answer=${index}`,
     }
   )
     .then((response) => response.json())
-    .then((result) => console.log(result));
+    .then((result) => addStatistik(result));
+}
+
+function addStatistik(data){
+    answers.innerHTML = '';
+    for (let i = 0; i < data.stat.length; i++){
+        let stat = document.createElement('div');
+        stat.innerHTML = `${data.stat[i].answer}: <b>${data.stat[i].votes}%</b>`;
+        answers.insertAdjacentElement('afterbegin', stat)
+    }
 }
